@@ -9,6 +9,8 @@ A utilização não deve ocorrer sem aviso prévio do autor e seu concentimento.
 ## Firebase Array
 A estrutura de dados utilizados no firebase mira a performace. Por isso ele implementa a array de forma alternativa a array de um objeto json. [Firebase Arrays](https://firebase.google.com/docs/database/web/lists-of-data)
 
+## Fianlizando o cliente
+Lembre-se de remover o listner como boa prática quando sua aplicação cliente for finalizada ou tiver mudança de contexto. [Remover Listner](https://firebase.google.com/docs/database/web/read-and-write#detach_listeners)
 # Group Seguranca
 
 # ENTRAR [POST /Sec/SignIn]
@@ -57,7 +59,13 @@ Após conseguir o token de autenticação é necessário validar utilizando a bi
 # Group Financeiro
 
 # Saldo [/bancarios/{username}/saldo]
-Resumo do saldo do usuário no ciclo atual da movimentação financeira.
+Resumo do saldo do usuário no ciclo atual da movimentação financeira. Utilizando os recursos do firebase você pode registrar um ouvidor para sempre manter seu saldo atualizado em seu cliente.
+```
+var saldoRef = firebase.database().ref('/bancarios/teste@tenant/saldo');
+saldoRef.on('value', function(snapshot) {
+  atualizarSaldo(snapshot.val());
+});
+```
 
 + Parameters
     + username: teste@tenant (string) - nome totalmente qualificado do usuario
@@ -95,7 +103,7 @@ Devido ao alto volume de dados utilize sempre o limitador e faça paginação. T
 O ciclo para se realizar uma aposta envolve solicitar o proximo código do bilhete. Salvar as informações da solicitação do bilhete e por último solicitar a confirmação do bilhete. A imagem abaixo ilustra o processo da solicitação.
 [Processo De Bilhete](http://yuml.me/47ccd375.png) . A API exbosta abaixo faz suporte ao processo de bilhete.
 
-## Resumo Bilhete [GET /movimentacaos/{username}/ciclo]
+## Bilhetes [GET /movimentacaos/{username}/ciclo]
 
 + Response 200 (application/json)
 
@@ -116,13 +124,21 @@ Restricões de Seguranca impedem a consulta a lista de bilhetes. Toda consulta d
 Para salbar o bilhete é essencial conhecer o processo de escrever no banco de dados do firebase. [Ler e Escrever Dados Firebase](https://firebase.google.com/docs/database/web/read-and-write#basic_write). O usuario persiste o dados de forma autonama e solicita a confirmação do bilhete.
 O mesmo não sofre alterações caso o bilhete já tenha sido confirmado.
 
+```
+    let bilhete = {
+        ...dadosBilhete
+    };
+
+    database.ref('bilhetes').child(codigo).set(bilhete)
+    .then(() => { alert('salvo com sucesso'); });
+```
 + Request (application/json)
 
     + Attributes(BilheteBase)
 
 + Response 201 (application/json)
 
-# CouponNext [POST /CouponNext]
+# CouponNext [POST /Cupom/CouponNext/]
 
 + Request
 
@@ -135,6 +151,33 @@ O mesmo não sofre alterações caso o bilhete já tenha sido confirmado.
             {
                 "codigo": "XX-DDDDDD-WWWW"
             }
+
+# CheckOut [POST /Cupom/CheckOut/{codigo}]
+Faz *checkout* do cupom validando suas informações e calculando os dados.
+Caso tenha algum erro ao processar a solicitação é retornado o `STATUS CODE` `422` com a informação do erro.
+É necessário informar o cupom no corpo do Request
+
++ Request (application/json)
+
+    + Headers
+            
+            Authorization: 'Bearer TOKEN' (string) - Token de autorização para realizar autorização
+
+    + Body
+    
+            {
+                "codigo": "XX-DDDDDD-WWWW"
+            }
+
++ Response 422 (application/json)
+
+            {
+                "error": "mensagem"
+            }
+
++ Response 200 (plain/text)
+
+            "Sucesso"
 
 # Data Structures
 
