@@ -37,3 +37,31 @@ Após conseguir o token de autenticação é necessário validar utilizando a bi
         {
             //TODO identificar parametros
         }
+
+# Group Financeiro
+
+# Saldo [/bancarios/{username}/saldo]
+Resumo do saldo do usuário no ciclo atual da movimentação financeira.
+
++ Parameters
+    + username: teste@tenant (string) - nome totalmente qualificado do usuario
+
+## GET
+
++ Response 200 (application/json)
+
+    + Attributes (Saldo)
+    
+# Group Eventos
+
+# Group Movimentação
+
+# Data Structures
+
+## identificado (object)
++ id (string) - identificador unico do recurso
+
+## Saldo (identificado)
++ credito (number) - Valores de credito da movimentacao financeira
++ debito (number) - Valores de debito da movimentacao financeira
++ moeda (number) - Quantidade disponivel do valor para aposta
