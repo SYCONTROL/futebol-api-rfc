@@ -1,0 +1,14 @@
+{
+  "name": "futebol-api-rfc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/sysbet/futebol-api-rfc.git",
+  "author": "Onezino Gabriel <zinogabriel@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "serve": "node node_modules/aglio/bin/aglio  -i apiary.apib -s"
+  },
+  "devDependencies": {
+    "aglio": "^2.3.0"
+  }
+}

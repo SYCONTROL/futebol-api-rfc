@@ -92,6 +92,8 @@ Devido ao alto volume de dados utilize sempre o limitador e faça paginação. T
 # Group Eventos
 
 # Group Aposta
+O ciclo para se realizar uma aposta envolve solicitar o proximo código do bilhete. Salvar as informações da solicitação do bilhete e por último solicitar a confirmação do bilhete. A imagem abaixo ilustra o processo da solicitação.
+[Processo De Bilhete](http://yuml.me/47ccd375.png) . A API exbosta abaixo faz suporte ao processo de bilhete.
 
 ## Resumo Bilhete [GET /movimentacaos/{username}/ciclo]
 
@@ -108,20 +110,29 @@ Restricões de Seguranca impedem a consulta a lista de bilhetes. Toda consulta d
 ## GET
 + Response 200 (application/json)
 
-    + Attributes (Bilhete)
+    + Attributes (BilheteCompleto)
+
+## POST
+
++ Request (application/json)
+
+    + Attributes(BilheteBase)
+
++ Response 201 (application/json)
+
 
 # Data Structures
 
 ## identificado (object)
 + id (string) - identificador unico do recurso
 
-## Bilhete (identificado)
+## BilheteBase (identificado)
 + cliente (string)
 + codigo (string)
 + valorAposta (string)
 + palpites (array)
 
-## BilheteResumo (identificado)
+## MetadataBilhete (identificado)
 + valorAposta (number)
 + valorPremio (number)
 + bilhete (string)
@@ -131,6 +142,14 @@ Restricões de Seguranca impedem a consulta a lista de bilhetes. Toda consulta d
 + username (string)
 + tenant (string)
 + quantidadePalpites (number)
++ comissao (object) - Objeto de informação da comissão
+
+## BilheteCompleto (BilheteBase)
++ metadata (MetadataBilhete)
++ taxas (object)
+
+## BilheteResumo (MetadataBilhete)
++ codigo (string)
 
 ## MovimentacaoResumo (identificado)
 + bilheteAbertoTotal (number)
