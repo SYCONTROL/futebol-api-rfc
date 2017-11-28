@@ -113,6 +113,8 @@ Restricões de Seguranca impedem a consulta a lista de bilhetes. Toda consulta d
     + Attributes (BilheteCompleto)
 
 ## POST
+Para salbar o bilhete é essencial conhecer o processo de escrever no banco de dados do firebase. [Ler e Escrever Dados Firebase](https://firebase.google.com/docs/database/web/read-and-write#basic_write). O usuario persiste o dados de forma autonama e solicita a confirmação do bilhete.
+O mesmo não sofre alterações caso o bilhete já tenha sido confirmado.
 
 + Request (application/json)
 
@@ -120,6 +122,19 @@ Restricões de Seguranca impedem a consulta a lista de bilhetes. Toda consulta d
 
 + Response 201 (application/json)
 
+# CouponNext [POST /CouponNext]
+
++ Request
+
+    + Headers
+            
+            Authorization: 'Bearer TOKEN' (string) - Token de autorização para realizar autorização
+
++ Response 201 (application/json)
+
+            {
+                "codigo": "XX-DDDDDD-WWWW"
+            }
 
 # Data Structures
 
