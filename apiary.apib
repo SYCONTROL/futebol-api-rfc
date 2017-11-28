@@ -6,6 +6,9 @@ HOST: http://v3.api.sysapp.bid
 Documentação para os desenvolvedores que estão integrando seus aplicativos a plataforma de eventos desportivos.
 A utilização não deve ocorrer sem aviso prévio do autor e seu concentimento. Entre em contato em caso de dúvidas.
 
+## Firebase Array
+A estrutura de dados utilizados no firebase mira a performace. Por isso ele implementa a array de forma alternativa a array de um objeto json. [Firebase Arrays](https://firebase.google.com/docs/database/web/lists-of-data)
+
 # Group Seguranca
 
 # ENTRAR [POST /Sec/SignIn]
@@ -38,6 +41,19 @@ Após conseguir o token de autenticação é necessário validar utilizando a bi
             //TODO identificar parametros
         }
 
+# PIN [GET /pins/{pinCode}]
+
++ Parameters
+    + pinCode (number) - Código PIN para acesso aos parametros da banca
+
++ Response 200 (application/json)
+
+    + Attributes
+        + nome (string)
+        + uid (string)
+        + tenant (string)
+        + cover (string) - URL da imagem da logo
+
 # Group Financeiro
 
 # Saldo [/bancarios/{username}/saldo]
@@ -51,17 +67,88 @@ Resumo do saldo do usuário no ciclo atual da movimentação financeira.
 + Response 200 (application/json)
 
     + Attributes (Saldo)
-    
+
+# Lancamentos [/lancamentos/{username}/ciclo{?limitToFirst,startAt}]
+Lista de lançamentos realizados na conta financeira do usuario
+Devido ao alto volume de dados utilize sempre o limitador e faça paginação. Também permaneça escutando alterações para evitar o numero de chamadas excessivas. [Filtrar e Ordernar Firebase](https://firebase.google.com/docs/database/web/lists-of-data?authuser=0#sorting_and_filtering_data)
+
++ Parameters
+    + limitToFirst (number) - quantidade maxima
+    + startAt (number) - filtro de inicio de atributos
+
+## GET
+
++ Response 200 (application/json)
+
+    + Attributes (array[Lancamento])
+
+## Resumo da Movimentações [GET /movimentacaos/{username}/resumo]
+
++ Response 200 (application/json)
+
+    + Attributes (MovimentacaoResumo)
+
+
 # Group Eventos
 
-# Group Movimentação
+# Group Aposta
+
+## Resumo Bilhete [GET /movimentacaos/{username}/ciclo]
+
++ Response 200 (application/json)
+
+    + Attributes (array[BilheteResumo])
+
+## Bilhete [/bilhetes/{codigo}]
+Restricões de Seguranca impedem a consulta a lista de bilhetes. Toda consulta deve ser realizda a apenas um bilhete.
+
++ Parameters
+    + codigo (string) - Codigo do bilhete
+
+## GET
++ Response 200 (application/json)
+
+    + Attributes (Bilhete)
 
 # Data Structures
 
 ## identificado (object)
 + id (string) - identificador unico do recurso
 
+## Bilhete (identificado)
++ cliente (string)
++ codigo (string)
++ valorAposta (string)
++ palpites (array)
+
+## BilheteResumo (identificado)
++ valorAposta (number)
++ valorPremio (number)
++ bilhete (string)
++ totalTaxa (number)
++ apostaUnica (boolean)
++ confirmacao (boolean)
++ username (string)
++ tenant (string)
++ quantidadePalpites (number)
+
+## MovimentacaoResumo (identificado)
++ bilheteAbertoTotal (number)
++ bilheteEncerradoTotal (number)
++ bilhetePremiadoTotal (number)
++ bilheteCanceladoTotal (number)
++ cicloInicio (number)
+
 ## Saldo (identificado)
 + credito (number) - Valores de credito da movimentacao financeira
 + debito (number) - Valores de debito da movimentacao financeira
 + moeda (number) - Quantidade disponivel do valor para aposta
+
+## Lancamento (identificado)
++ movimentacao: CREDITO, DEBITO (enum)
++ origem
++ quando
++ tipo (string) - Determina o tipo da origem do lançamento
++ ts (number) - timestamp da data do lançamento
++ valor (number) - Valor do lançamento
++ saldo (Saldo)
