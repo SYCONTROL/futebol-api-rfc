@@ -1,81 +1,39 @@
 FORMAT: 1A
-HOST: http://v3.api.sysapp.bid/
+HOST: http://v3.api.sysapp.bid
 
 # sysbetv3 API
 
 Documentação para os desenvolvedores que estão integrando seus aplicativos a plataforma de eventos desportivos.
 A utilização não deve ocorrer sem aviso prévio do autor e seu concentimento. Entre em contato em caso de dúvidas.
 
-## Questions Collection [/questions]
+# Group Seguranca
 
-### List All Questions [GET]
+# ENTRAR [POST /Sec/SignIn]
+Após conseguir o token de autenticação é necessário validar utilizando a biblioteca do firebase. O token retornado pela validação do firebase deve ser mantido para futuras requisições as demais partes da API e o token de autenticação da chamada deve ser descartado. [Custom Auth](https://firebase.google.com/docs/auth/web/custom-auth).
 
-+ Response 200 (application/json)
+```
+    //javascript
+    firebase.auth().signInWithCustomToken(token).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // ...
+    });
+```
++ Request (application/x-www-form-urlencoded)
 
-        [
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 2048
-                    }, {
-                        "choice": "Python",
-                        "votes": 1024
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 512
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 256
-                    }
-                ]
-            }
-        ]
-
-### Create a New Question [POST]
-
-You may create your own question using this action. It takes a JSON
-object containing a question and a collection of answers in the
-form of choices.
-
-+ Request (application/json)
-
-        {
-            "question": "Favourite programming language?",
-            "choices": [
-                "Swift",
-                "Python",
-                "Objective-C",
-                "Ruby"
-            ]
-        }
-
-+ Response 201 (application/json)
-
-    + Headers
-
-            Location: /questions/2
-
+    + Attributes
+        + grant_type: password
+        + username - nome do usuario para autenticar
+        + pin_code - codigo pin da empresa
+        + password (string) - senha
+    
     + Body
 
-            {
-                "question": "Favourite programming language?",
-                "published_at": "2015-08-05T08:40:51.620Z",
-                "choices": [
-                    {
-                        "choice": "Swift",
-                        "votes": 0
-                    }, {
-                        "choice": "Python",
-                        "votes": 0
-                    }, {
-                        "choice": "Objective-C",
-                        "votes": 0
-                    }, {
-                        "choice": "Ruby",
-                        "votes": 0
-                    }
-                ]
-            }
+            grant_type:password&password:[password]&username:[username]&pin_code:[pin_code]
+        
++ Response 200 (application/json)
+
+        {
+            //TODO identificar parametros
+        }
